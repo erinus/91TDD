@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataSplitter
 {
-	public abstract class Row : IRow
+	public abstract class Row
 	{
 		public Int32 GetValueFromCell(string name)
 		{

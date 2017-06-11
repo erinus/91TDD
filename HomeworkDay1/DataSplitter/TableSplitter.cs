@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace DataSplitter
 {
-	public class TableSplitter : ITableSplitter
+	public class TableSplitter
 	{
-		private List<IRow> _rows = new List<IRow>();
+		private List<Row> _rows = new List<Row>();
 
-		public void SetRows(List<IRow> rows)
+		public void SetRows(List<Row> rows)
 		{
 			this._rows = rows;
 		}
 
-		public List<IRow> GetRows()
+		public List<Row> GetRows()
 		{
 			return this._rows;
 		}

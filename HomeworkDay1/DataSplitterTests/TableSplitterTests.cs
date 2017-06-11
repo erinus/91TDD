@@ -12,7 +12,7 @@ namespace DataSplitterTests
 	public class TableSplitterTests
 	{
 		// Orders 測試資料集
-		private readonly List<IRow> _orders = new List<IRow>
+		private readonly List<Row> _orders = new List<Row>
 		{
 			new Order {Id = 1, Cost = 1, Revenue = 11, SellPrice = 21},
 			new Order {Id = 2, Cost = 2, Revenue = 12, SellPrice = 22},
@@ -71,7 +71,7 @@ namespace DataSplitterTests
 			//--------------//
 			// act & assert //
 			//--------------//
-			IRow row = ts.GetRows()[2];
+			Row row = ts.GetRows()[2];
 			Assert.IsNotNull(row);
 
 			//--------------//
