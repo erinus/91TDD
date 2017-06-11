@@ -8,11 +8,6 @@ namespace DataSplitter
 {
 	public abstract class Row
 	{
-		internal Int32 GetValueFromCell(string name)
-		{
-			var prop = this.GetType().GetField(name);
-			var val = prop.GetValue(this);
-			return Convert.ToInt32(val);
-		}
+		
 	}
 }

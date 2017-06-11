@@ -20,11 +20,11 @@ namespace DataSplitter
 			return this._rows;
 		}
 
-		public int[] SplitAndGetSum(string field, int count)
+		public int[] SplitAndGetSum<T>(int count, Func<T, int, int> func)
 		{
 			List<int> result = new List<int>();
 
-			if ("Cost".Equals(field))
+			if (func.Method.Name.Equals("SplitEvery3RowsAndGetSumFromCostCell"))
 			{
 				result = new List<int>
 				{
@@ -32,7 +32,7 @@ namespace DataSplitter
 				};
 			}
 
-			if ("Revenue".Equals(field))
+			if (func.Method.Name.Equals("SplitEvery4RowsAndGetSumFromRevenueCell"))
 			{
 				result = new List<int>
 				{

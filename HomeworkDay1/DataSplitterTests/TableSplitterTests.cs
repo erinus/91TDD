@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace DataSplitterTests
 {
@@ -27,6 +28,18 @@ namespace DataSplitterTests
 			new Order {Id = 10, Cost = 10, Revenue = 20, SellPrice = 30},
 			new Order {Id = 11, Cost = 11, Revenue = 21, SellPrice = 31}
 		}.AsReadOnly();
+
+		// 用於傳入自訂欄位的總和計算式
+		private int SplitEvery3RowsAndGetSumFromCostCell(Order order, int sum)
+		{
+			return order.Cost + sum;
+		}
+
+		// 用於傳入自訂欄位的總和計算式
+		private int SplitEvery4RowsAndGetSumFromRevenueCell(Order order, int sum)
+		{
+			return order.Revenue + sum;
+		}
 
 		// 測試訂單資料集寫入後，訂單數量是否正確
 		[TestMethod()]
@@ -72,16 +85,16 @@ namespace DataSplitterTests
 			//--------------//
 			// act & assert //
 			//--------------//
-			Row row = ts.GetRows().ElementAt(2);
-			Assert.IsNotNull(row);
+			Order orderInTableSpliiter = ts.GetRows().ElementAt(2) as Order;
+			Assert.IsNotNull(orderInTableSpliiter);
 
 			//--------------//
 			// act & assert //
 			//--------------//
-			int actual = row.GetValueFromCell("Revenue");
-			Order order = this._orders[2] as Order;
-			int expected = order.Revenue;
-			Assert.IsNotNull(order);
+			int actual = orderInTableSpliiter.Revenue;
+			Order orderInDataSet = this._orders[2] as Order;
+			Assert.IsNotNull(orderInDataSet);
+			int expected = orderInDataSet.Revenue;
 			Assert.AreEqual(expected, actual);
 		}
 
@@ -98,7 +111,7 @@ namespace DataSplitterTests
 			// act //
 			//-----//
 			ts.SetRows(this._orders);
-			int[] actual = ts.SplitAndGetSum("Cost", 3);
+			int[] actual = ts.SplitAndGetSum<Order>(3, this.SplitEvery3RowsAndGetSumFromCostCell);
 			int[] expected = new int[] { 6, 15, 24, 21 };
 
 			//--------------//
@@ -120,7 +133,7 @@ namespace DataSplitterTests
 			// act //
 			//-----//
 			ts.SetRows(this._orders);
-			int[] actual = ts.SplitAndGetSum("Revenue", 4);
+			int[] actual = ts.SplitAndGetSum<Order>(4, this.SplitEvery4RowsAndGetSumFromRevenueCell);
 			int[] expected = new int[] { 50, 66, 60 };
 
 			//--------------//
