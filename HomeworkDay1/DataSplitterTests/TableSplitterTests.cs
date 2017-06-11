@@ -2,6 +2,7 @@
 using DataSplitter;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace DataSplitterTests
 	public class TableSplitterTests
 	{
 		// Orders 測試資料集
-		private readonly List<Row> _orders = new List<Row>
+		private readonly ReadOnlyCollection<Row> _orders = new List<Row>
 		{
 			new Order {Id = 1, Cost = 1, Revenue = 11, SellPrice = 21},
 			new Order {Id = 2, Cost = 2, Revenue = 12, SellPrice = 22},
@@ -25,7 +26,7 @@ namespace DataSplitterTests
 			new Order {Id = 9, Cost = 9, Revenue = 19, SellPrice = 29},
 			new Order {Id = 10, Cost = 10, Revenue = 20, SellPrice = 30},
 			new Order {Id = 11, Cost = 11, Revenue = 21, SellPrice = 31}
-		};
+		}.AsReadOnly();
 
 		// 測試訂單資料集寫入後，訂單數量是否正確
 		[TestMethod()]
@@ -39,13 +40,13 @@ namespace DataSplitterTests
 			//--------//
 			// assert //
 			//--------//
-			Assert.AreEqual(0, ts.GetRows().Count);
+			Assert.AreEqual(0, ts.GetRows().Count());
 
 			//-----//
 			// act //
 			//-----//
 			ts.SetRows(this._orders);
-			int actual = ts.GetRows().Count;
+			int actual = ts.GetRows().Count();
 			int expected = this._orders.Count;
 
 			//--------//
@@ -71,7 +72,7 @@ namespace DataSplitterTests
 			//--------------//
 			// act & assert //
 			//--------------//
-			Row row = ts.GetRows()[2];
+			Row row = ts.GetRows().ElementAt(2);
 			Assert.IsNotNull(row);
 
 			//--------------//

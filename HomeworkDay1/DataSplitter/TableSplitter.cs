@@ -8,14 +8,14 @@ namespace DataSplitter
 {
 	public class TableSplitter
 	{
-		private List<Row> _rows = new List<Row>();
+		private IEnumerable<Row> _rows = new List<Row>();
 
-		public void SetRows(List<Row> rows)
+		public void SetRows(IEnumerable<Row> rows)
 		{
 			this._rows = rows;
 		}
 
-		public List<Row> GetRows()
+		public IEnumerable<Row> GetRows()
 		{
 			return this._rows;
 		}
