@@ -46,7 +46,6 @@
     <Compile Include="Order.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Row.cs" />
     <Compile Include="TableSplitter.cs" />
   </ItemGroup>
   <ItemGroup>

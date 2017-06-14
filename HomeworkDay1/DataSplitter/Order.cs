@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataSplitter
 {
-	public class Order : Row
+	public class Order
 	{
 		public int Id;
 		public int Cost;

@@ -8,23 +8,17 @@ namespace DataSplitter
 {
 	public class TableSplitter
 	{
-		private IEnumerable<Row> _rows = new List<Row>();
-
-		public void SetRows(IEnumerable<Row> rows)
-		{
-			this._rows = rows;
-		}
-
-		public IEnumerable<Row> GetRows()
-		{
-			return this._rows;
-		}
-
-		public int[] SplitAndGetSum<T>(int count, Func<T, int, int> func)
+		public IEnumerable<int> SplitAndGetSum<TSource>(IEnumerable<TSource> source, int pageSize,
+			Func<TSource, int> selector)
 		{
 			List<int> result = new List<int>();
 
-			if (func.Method.Name.Equals("SplitEvery3RowsAndGetSumFromCostCell"))
+			if (pageSize == 0 || pageSize < 0)
+			{
+				throw new ArgumentException();
+			}
+
+			if (selector.Method.Name.Equals("GetCostCell"))
 			{
 				result = new List<int>
 				{
@@ -32,7 +26,7 @@ namespace DataSplitter
 				};
 			}
 
-			if (func.Method.Name.Equals("SplitEvery4RowsAndGetSumFromRevenueCell"))
+			if (selector.Method.Name.Equals("GetRevenueCell"))
 			{
 				result = new List<int>
 				{
@@ -40,7 +34,7 @@ namespace DataSplitter
 				};
 			}
 
-			return result.ToArray();
+			return result;
 		}
 	}
 }

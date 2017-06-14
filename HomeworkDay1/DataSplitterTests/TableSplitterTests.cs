@@ -1,12 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DataSplitter;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using FluentAssertions;
 
 namespace DataSplitterTests
 {
@@ -14,7 +16,7 @@ namespace DataSplitterTests
 	public class TableSplitterTests
 	{
 		// Orders 測試資料集
-		private readonly ReadOnlyCollection<Row> _orders = new List<Row>
+		private readonly ReadOnlyCollection<Order> _orders = new List<Order>
 		{
 			new Order {Id = 1, Cost = 1, Revenue = 11, SellPrice = 21},
 			new Order {Id = 2, Cost = 2, Revenue = 12, SellPrice = 22},
@@ -30,93 +32,63 @@ namespace DataSplitterTests
 		}.AsReadOnly();
 
 		// 用於傳入自訂欄位的總和計算式
-		private int SplitEvery3RowsAndGetSumFromCostCell(Order order, int sum)
+		private int GetCostCell(Order order)
 		{
-			return order.Cost + sum;
+			return order.Cost;
 		}
 
 		// 用於傳入自訂欄位的總和計算式
-		private int SplitEvery4RowsAndGetSumFromRevenueCell(Order order, int sum)
+		private int GetRevenueCell(Order order)
 		{
-			return order.Revenue + sum;
+			return order.Revenue;
 		}
 
-		// 測試訂單資料集寫入後，訂單數量是否正確
+		// 測試依序每次取出訂單筆數為負數時，應觸發 ArgumentException
 		[TestMethod()]
-		public void SetRowsTest()
+		public void SplitRowsByNegativeNumberAndTriggerArgumentExceptionTest()
 		{
-			//---------//
-			// arrange //
-			//---------//
+			// arrange
 			TableSplitter ts = new TableSplitter();
 
-			//--------//
-			// assert //
-			//--------//
-			Assert.AreEqual(0, ts.GetRows().Count());
+			// act
+			Action expected = () =>
+			{
+				ICollection actual = ts.SplitAndGetSum<Order>(this._orders, -1, (Order order) => 0) as ICollection;
+			};
 
-			//-----//
-			// act //
-			//-----//
-			ts.SetRows(this._orders);
-			int actual = ts.GetRows().Count();
-			int expected = this._orders.Count;
-
-			//--------//
-			// assert //
-			//--------//
-			Assert.AreEqual(expected, actual);
+			// act & assert
+			expected.ShouldThrow<ArgumentException>();
 		}
 
-		// 測試訂單資料集寫入後，第三筆訂單的 Revenue 欄位是否正確
+		// 測試依序每次取出訂單筆數為 0 時，應觸發 ArgumentException
 		[TestMethod()]
-		public void GetRevenueCellValueFromThirdRowTest()
+		public void SplitRowsByZeroAndTriggerArgumentExceptionTest()
 		{
-			//---------//
-			// arrange //
-			//---------//
+			// arrange
 			TableSplitter ts = new TableSplitter();
 
-			//-----//
-			// act //
-			//-----//
-			ts.SetRows(this._orders);
+			// act
+			Action expected = () =>
+			{
+				ICollection actual = ts.SplitAndGetSum<Order>(this._orders, 0, (Order order) => 0) as ICollection;
+			};
 
-			//--------------//
-			// act & assert //
-			//--------------//
-			Order orderInTableSpliiter = ts.GetRows().ElementAt(2) as Order;
-			Assert.IsNotNull(orderInTableSpliiter);
-
-			//--------------//
-			// act & assert //
-			//--------------//
-			int actual = orderInTableSpliiter.Revenue;
-			Order orderInDataSet = this._orders[2] as Order;
-			Assert.IsNotNull(orderInDataSet);
-			int expected = orderInDataSet.Revenue;
-			Assert.AreEqual(expected, actual);
+			// act & assert
+			expected.ShouldThrow<ArgumentException>();
 		}
 
 		// 測試依序每次取出三筆訂單，並回傳每三筆訂單一組的 Cost 欄位總和集合
 		[TestMethod()]
 		public void SplitEvery3RowsAndGetSumFromCostCellTest()
 		{
-			//---------//
-			// arrange //
-			//---------//
+			// arrange
 			TableSplitter ts = new TableSplitter();
 
-			//-----//
-			// act //
-			//-----//
-			ts.SetRows(this._orders);
-			int[] actual = ts.SplitAndGetSum<Order>(3, this.SplitEvery3RowsAndGetSumFromCostCell);
-			int[] expected = new int[] { 6, 15, 24, 21 };
-
-			//--------------//
-			// act & assert //
-			//--------------//
+			// act
+			ICollection actual = ts.SplitAndGetSum<Order>(this._orders, 3, this.GetCostCell) as ICollection;
+			ICollection expected = new List<int> { 6, 15, 24, 21 };
+			
+			// act & assert
 			CollectionAssert.AreEqual(expected, actual);
 		}
 
@@ -124,21 +96,14 @@ namespace DataSplitterTests
 		[TestMethod()]
 		public void SplitEvery4RowsAndGetSumFromRevenueCellTest()
 		{
-			//---------//
-			// arrange //
-			//---------//
+			// arrange
 			TableSplitter ts = new TableSplitter();
 
-			//-----//
-			// act //
-			//-----//
-			ts.SetRows(this._orders);
-			int[] actual = ts.SplitAndGetSum<Order>(4, this.SplitEvery4RowsAndGetSumFromRevenueCell);
-			int[] expected = new int[] { 50, 66, 60 };
-
-			//--------------//
-			// act & assert //
-			//--------------//
+			// act
+			ICollection actual = ts.SplitAndGetSum<Order>(this._orders, 4, this.GetRevenueCell) as ICollection;
+			ICollection expected = new List<int> { 50, 66, 60 };
+			
+			// act & assert
 			CollectionAssert.AreEqual(expected, actual);
 		}
 	}
