@@ -27,10 +27,13 @@ namespace Cart
 
 			List<CartItem> cartItems = new List<CartItem>(this.CartItems);
 
+			// 當購物車裡還有未納入計算的購物項目時繼續執行
 			while (this.GetTotalCountOfCartItems(cartItems) > 0)
 			{
+				// 取出最符合的優惠項目
 				SaleItem saleItem = this.GetSaleItemInCartItems(cartItems);
 
+				// 如果找不到優惠項目則將剩下未納入計算的購物項目依原價計算
 				if (saleItem == null)
 				{
 					foreach (CartItem cartItem in cartItems)
@@ -40,8 +43,11 @@ namespace Cart
 					break;
 				}
 
+				// 優惠項目小計
 				int subTotal = 0;
+				// 優惠項目所需不同項目數量
 				int combination = saleItem.Combination;
+				// 依照優惠項目扣除對應購物項目數量，扣除購物項目價格依優惠比例計算
 				foreach (CartItem cartItem in cartItems)
 				{
 					if (cartItem.Count > 0)
@@ -79,6 +85,7 @@ namespace Cart
 
 			foreach (SaleItem saleItem in this.SaleItems)
 			{
+				// 判斷購物清單是否符合優惠項目
 				if (this.IsMatchedSaleItem(cartItems, saleItem))
 				{
 					matchedSaleItems.Add(saleItem);
@@ -99,6 +106,7 @@ namespace Cart
 					matchedSaleItem = saleItem;
 					continue;
 				}
+				// 優惠項目優先規則，不同購物項目符合數越多者優先
 				if (matchedSaleItem.Combination < saleItem.Combination)
 				{
 					matchedSaleItem = saleItem;
