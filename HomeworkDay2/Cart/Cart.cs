@@ -1,15 +1,26 @@
-﻿namespace Cart
+﻿using System.Collections.Generic;
+
+namespace Cart
 {
 	public class Cart
 	{
+		public List<CartItem> Items = new List<CartItem>();
+
 		public void AddItem(CartItem cartItem)
 		{
-			throw new System.NotImplementedException();
+			this.Items.Add(cartItem);
 		}
 
 		public int GetTotalPrice()
 		{
-			throw new System.NotImplementedException();
+			int result = 0;
+			
+			foreach (CartItem cartItem in this.Items)
+			{
+				result += (cartItem.Price * cartItem.Count);
+			}
+
+			return result;
 		}
 	}
 }
