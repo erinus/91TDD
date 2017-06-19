@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CartTests
 {
+	using Cart;
+
 	[TestClass]
 	public class CartTest
 	{
