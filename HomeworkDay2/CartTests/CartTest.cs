@@ -265,5 +265,53 @@ namespace CartTests
 			// assert
 			Assert.AreEqual(expected, actual);
 		}
+
+		[TestMethod]
+		public void Test_Total_Price_Should_Be_1255_When_2x_Potter_EP1_And_5x_Potter_EP2_And_3x_Potter_EP3_And_4x_Potter_EP4_And_1x_Potter_EP5_Are_In_Cart()
+		{
+			// arrange
+			_cart.AddCartItem(new CartItem
+			{
+				ID = 1,
+				Name = "Harry Potter (Book 1)",
+				Price = 100,
+				Count = 2
+			});
+			_cart.AddCartItem(new CartItem
+			{
+				ID = 2,
+				Name = "Harry Potter (Book 2)",
+				Price = 100,
+				Count = 5
+			});
+			_cart.AddCartItem(new CartItem
+			{
+				ID = 3,
+				Name = "Harry Potter (Book 3)",
+				Price = 100,
+				Count = 3
+			});
+			_cart.AddCartItem(new CartItem
+			{
+				ID = 4,
+				Name = "Harry Potter (Book 4)",
+				Price = 100,
+				Count = 4
+			});
+			_cart.AddCartItem(new CartItem
+			{
+				ID = 5,
+				Name = "Harry Potter (Book 5)",
+				Price = 100,
+				Count = 1
+			});
+
+			// act
+			int actual = _cart.GetTotalPrice();
+			int expected = 1255;
+
+			// assert
+			Assert.AreEqual(expected, actual);
+		}
 	}
 }
